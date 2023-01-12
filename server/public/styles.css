@@ -1,0 +1,105 @@
+body{
+    background-image: url(./img/driverID.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: sans-serif;
+    letter-spacing: 0.5px;
+    max-height: 90vh;
+    background-color: grey;
+    color: white;
+    
+}
+.indicator{
+    font-size: x-large;
+    color: red;
+    position: relative;
+    top: 3px;
+    align-self: center;
+}
+
+.portOpen{
+    color: green;
+}
+
+input[type="file"] {
+    color: transparent;
+}
+
+main{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.reader{
+    width: 40%;
+    
+}
+.list{
+    margin-left: 10px;
+}
+.add-ex{
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+}
+
+figcaption{
+    text-align: center;
+    font-style: italic;
+    font-size: small;
+    position: relative;
+    top: -12px;
+}
+#iButtonsList{
+    padding: 10px 15px 10px 5px;
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: 1px solid black;
+    border-radius: 2.5px;
+    background-color: rgba(0, 0, 0, 0.712);
+    color: white;
+}
+
+.iButtons{
+    display: flex;
+    justify-content: space-between;
+    
+}
+.index{
+    padding-right: 10px;
+    margin-right: 10px;
+    font-weight: 600;
+}
+
+.delete{
+    margin-left: 10px;
+    color: red;
+}
+
+.delete:hover{
+    cursor: pointer;
+}
+.list div:last-child{
+    display: flex;
+    justify-content: center;
+}
+
+.download-icon{
+    height: 20px;
+    width: 20px;
+}
+#download{
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: large;
+    font-weight: 500;    
+}
+#download:hover{
+    cursor: pointer;
+}
