@@ -1,8 +1,8 @@
-#include <OneWire.h> // Librería para lectura de llaves 
+#include <OneWire.h>
 
-#define button 3          // 
-#define greenLed 5        // 
-#define redLed 6          // 
+#define button 3          
+#define greenLed 5       
+#define redLed 6        
 
 OneWire  ds(13);
 byte addr[8];             
