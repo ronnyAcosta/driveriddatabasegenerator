@@ -139,7 +139,6 @@ io.on('connect', socket => {
     socket.on('file', (content)=>{
         if(content.length % 8 == 2){
             iButtonsIndex = 1;
-            //let iButtonsArray = [];
             let buffer = Buffer.alloc(content.length-2, content);
             let iButtonsString = buffer.toString('hex');
             iButtonsList = [];
@@ -173,7 +172,6 @@ io.on('connect', socket => {
                 message += `<div class='iButtons'><span class='index'><span>${iButtonsIndex}</span>:</span><span>${iButton.toUpperCase()}</span><span class="delete" onclick='del(this)'>&#10006;</span></div>\n`;
                 iButtonsIndex++;
                 socket.emit('iButtons', message);
-                //console.log(iButtonsList);
             }
         }
     });
