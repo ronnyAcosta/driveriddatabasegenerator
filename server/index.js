@@ -41,7 +41,7 @@ io.on('connect', socket => {
     
     socket.emit('portList', portList);  
 
-    socket.on('port', async (portFromClient) => {
+    socket.on('port', (portFromClient) => {
         if(port == undefined || port.path == ""){
             port = new SerialPort({
             path: portFromClient,
