@@ -36,6 +36,10 @@ main{
     width: 40%;
     
 }
+#textFile{
+    max-width: 132px;
+}
+
 .list{
     margin-left: 10px;
 }
