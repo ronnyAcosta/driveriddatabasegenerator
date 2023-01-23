@@ -31,9 +31,11 @@ main{
     justify-content: flex-start;
     align-items: flex-start;
 }
+
 .reader{
     display: none;
 }
+
 .input{
     width: 40%;
     

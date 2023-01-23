@@ -100,16 +100,14 @@ function openFile(){
     console.log("Opening File");
 }
 
-function charCode(event){
-    let code = event.charCode;
+function deleteInvalidChar(){
     let iButton = document.getElementById('iButton');
-    if((code<48 || code>57) && (code<65 || code>70) && (code<97 || code>102)){
-        if(iButton.value.length != 16){
-            setTimeout(()=>{
-                iButton.value = iButton.value.replace(String.fromCharCode(code), '');
-            }, 1);
+    for(char of iButton.value){
+        let code = char.charCodeAt(0);
+        console.log(code);
+        if((code<48 || code>57) && (code<65 || code>70) && (code<97 || code>102)){
+            iButton.value = iButton.value.replace(char, '');
         }
-        
     }
 }
 

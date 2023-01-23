@@ -37,7 +37,7 @@
             <div>
                 <div>
                     <h2>Add iButtons</h2>
-                    <span><input type="text" maxlength="16" id="iButton" onkeypress="charCode(event)"></span>
+                    <span><input type="text" maxlength="16" id="iButton" oninput="deleteInvalidChar()"></span>
                     <span><button class="button" onclick="add()">Add</button></span>
                     <div class="add-ex">
                         <figure><img src="img/iButton.png" alt="iButton"></figure>
