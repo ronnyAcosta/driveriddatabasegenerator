@@ -32,10 +32,7 @@ SerialPort.list().then(function(ports){
     });
 });
 
-let iButtonsIndex = 1;
-let message = "";
 let port = undefined;
-let iButtonsList = [];
 
 io.on('connect', socket => {
     
@@ -62,25 +59,15 @@ io.on('connect', socket => {
             const parser = port.pipe(new ReadlineParser({ delimiter: `*` }));
             parser.on('data', (data) => {
                 if(data.length == 16){
-                    if(duplicatedIButtonCheck(data) == true){
-                        console.log("iButton is on list");
-                        let iButtonCheck = Buffer.alloc(1, "01", 'hex');
-                        port.write(iButtonCheck);
-                        console.log(iButtonCheck);
-                    }
-    
-                    else{
-                        iButtonsList.push(data.toLowerCase());
-                        message += `<div class='iButtons'><span class='index'><span>${iButtonsIndex}</span>:</span><span>${data.toUpperCase()}</span><span class="delete" onclick='del(this)'>&#10006;</span></div>\n`;
-                        iButtonsIndex++;
-                        socket.emit('iButtons', message);
-                        let iButtonCheck = Buffer.alloc(1, "00", 'hex');
-                        port.write(iButtonCheck)
-                        console.log(iButtonCheck);
-                    }
+                    socket.emit('iButton', data);
                 }
             });
     }) 
+
+    socket.on('iButtonCheck', check =>{
+        let iButtonCheck = Buffer.alloc(1, check, 'hex');
+        port.write(iButtonCheck);
+    });
 
     socket.on('closePort', ()=>{
         if(port != undefined){
@@ -93,9 +80,6 @@ io.on('connect', socket => {
     });
 
     socket.on('reset', ()=>{
-        iButtonsIndex = 1;
-        message = "";
-        iButtonsList = [];
         portList = [];
         SerialPort.list().then(function(ports){
             ports.forEach(function(port){
@@ -110,11 +94,7 @@ io.on('connect', socket => {
         }, 500);
     });
 
-    socket.on('buffer', ()=>{
-        let iButtonsString = "";
-        for(iButton of iButtonsList){
-            iButtonsString += iButton;
-        }
+    socket.on('buffer', (iButtonsString)=>{
         let iButtonsBuffer = Buffer.alloc(iButtonsString.length/2, iButtonsString, 'hex');
         let crc = crc16xmodem(iButtonsBuffer).toString(16);
         if(crc.length < 4){
@@ -135,24 +115,13 @@ io.on('connect', socket => {
         console.log(iButtonsDatabase)
         socket.emit('save', iButtonsDatabase);
     })
-
+  
     socket.on('file', (content)=>{
         if(content.length % 8 == 2){
-            iButtonsIndex = 1;
             let buffer = Buffer.alloc(content.length-2, content);
             let iButtonsString = buffer.toString('hex');
-            iButtonsList = [];
             if(buffer.length % 8 == 0){
-                for(let i=0; i<iButtonsString.length; i+=16){
-                    iButtonsList.push(iButtonsString.substring(i, i+16));
-                }
-                message = '';
-                for(iButton of iButtonsList){
-                    message += `<div class='iButtons'><span class='index'><span>${iButtonsIndex}</span>:</span><span>${iButton.toUpperCase()}</span><span class="delete" onclick='del(this)'>&#10006;</span></div>\n`;
-                    iButtonsIndex++;
-                }
-                socket.emit('iButtons', message);
-                console.log("File Opened");             
+                socket.emit('fileContent', iButtonsString);            
             }
         }
         else{
@@ -161,46 +130,4 @@ io.on('connect', socket => {
         }
         
     });
-
-    socket.on('addIButton', (iButton)=>{
-        if(iButton.length == 16){
-            if(duplicatedIButtonCheck(iButton) == true){
-                socket.emit('alert', "iButton is on list");
-            }
-            else{
-                iButtonsList.push(iButton.toLowerCase());
-                message += `<div class='iButtons'><span class='index'><span>${iButtonsIndex}</span>:</span><span>${iButton.toUpperCase()}</span><span class="delete" onclick='del(this)'>&#10006;</span></div>\n`;
-                iButtonsIndex++;
-                socket.emit('iButtons', message);
-            }
-        }
-    });
-
-    socket.on('delete', (index)=>{
-        index = parseInt(index)-1;
-        if(iButtonsList.length > 0){
-            if(iButtonsList.length > index){
-                iButtonsList.splice(index, 1);
-                console.log(iButtonsList);
-                iButtonsIndex = 1;
-                message = '';
-                for(iButton of iButtonsList){
-                    message += `<div class='iButtons'><span class='index'><span>${iButtonsIndex}</span>:</span><span>${iButton.toUpperCase()}</span><span class="delete" onclick='del(this)'>&#10006;</span></div>\n`;
-                    iButtonsIndex++;
-                }
-                socket.emit('iButtons', message);
-            }
-            else{
-                socket.emit('invalid');
-            }
-        }
-    });  
 });
-
-function duplicatedIButtonCheck(iButton){
-    for(index of iButtonsList){
-        if(index == iButton){
-            return true;
-        }
-    }
-}

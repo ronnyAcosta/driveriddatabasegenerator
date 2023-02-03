@@ -6,6 +6,9 @@ let selectedPort = "";
 let portStatus = false;
 let content;
 let iButtonsDatabase = "";
+let iButtonsIndex = 1;
+let message = "";
+let iButtonsList = [];
 
 socket.on('selectedPort', (data) => {
     selectedPort = data;
@@ -23,9 +26,19 @@ socket.on('portStatus', (status)=>{
     portStatus = status;
 })
 
-socket.on('iButtons', (data)=>{
-    let iButtonsList = document.getElementById('iButtonsList');
-    iButtonsList.innerHTML = data;
+socket.on('iButton', (data)=>{
+    if(duplicatedIButtonCheck(data) == true){
+        console.log("iButton is on list");
+        socket.emit('iButtonCheck', '01')
+    }
+    else{
+        iButtonsList.push(data.toLowerCase());
+        message += `<div class='iButtons'><span class='index'><span>${iButtonsIndex}</span>:</span><span>${data.toUpperCase()}</span><span class="delete" onclick='del(this)'>&#10006;</span></div>\n`;
+        iButtonsIndex++;
+        socket.emit('iButtonCheck', '00')
+        let list = document.getElementById('iButtonsList');
+        list.innerHTML = message;
+    }
 });
 
 socket.on('save', (data)=>{
@@ -38,18 +51,36 @@ socket.on('save', (data)=>{
     URL.revokeObjectURL(url);
 });
 
+/*
 socket.on('iButtonString', (data)=>{
     iButtonsDatabase = data;
     console.log(iButtonsDatabase);
-});
-
+});*/
+/*
 socket.on('invalid', ()=>{
     alert('Invalid index');
 });
-
+*/
 socket.on('alert', (message)=>{
     alert(message);
 })
+
+socket.on('fileContent', (iButtonsString)=>{
+    if(iButtonsString.length % 16 == 0){
+        iButtonsIndex = 1;
+        iButtonsList = [];
+        for(let i=0; i<iButtonsString.length; i+=16){
+            iButtonsList.push(iButtonsString.substring(i, i+16));
+        }
+        message = '';
+        for(iButton of iButtonsList){
+            message += `<div class='iButtons'><span class='index'><span>${iButtonsIndex}</span>:</span><span>${iButton.toUpperCase()}</span><span class="delete" onclick='del(this)'>&#10006;</span></div>\n`;
+            iButtonsIndex++;
+        }
+        let list = document.getElementById('iButtonsList');
+        list.innerHTML = message;
+    }
+});
 
 function openPort(){
     let port = document.getElementById("select").value;
@@ -77,11 +108,20 @@ function closePort(){
 }
 
 function resetIndex(){
+    /*
+    iButtonsIndex = 1;
+    message = "";
+    iButtonsList = [];
+    */
     socket.emit('reset');
 }
 
 function download(){
-    socket.emit('buffer');
+    let iButtonsString = "";
+    for(iButton of iButtonsList){
+        iButtonsString += iButton;
+    }
+    socket.emit('buffer', iButtonsString);
 }
 
 function openFile(){
@@ -104,7 +144,6 @@ function deleteInvalidChar(){
     let iButton = document.getElementById('iButton');
     for(char of iButton.value){
         let code = char.charCodeAt(0);
-        console.log(code);
         if((code<48 || code>57) && (code<65 || code>70) && (code<97 || code>102)){
             iButton.value = iButton.value.replace(char, '');
         }
@@ -112,17 +151,26 @@ function deleteInvalidChar(){
 }
 
 function add(){
-    let iButton = document.getElementById('iButton').value;
+    let iButton = document.getElementById('iButton').value.toLowerCase();
     if(iButton.length == 16){
         for(char of iButton){
             let code = char.charCodeAt(0);
             if((code<48 || code>57) && (code<65 || code>70) && (code<97 || code>102)){
-                console.log(`${code}: ${char}`);
                 return alert("Invalid char");
             }
         }
-        socket.emit('addIButton', iButton.toLowerCase());
         document.getElementById('iButton').value = "";
+
+        if(duplicatedIButtonCheck(iButton) == true){
+            alert("iButton is on list");
+        }
+        else{
+            iButtonsList.push(iButton.toLowerCase());
+            message += `<div class='iButtons'><span class='index'><span>${iButtonsIndex}</span>:</span><span>${iButton.toUpperCase()}</span><span class="delete" onclick='del(this)'>&#10006;</span></div>\n`;
+            iButtonsIndex++;
+            let list = document.getElementById('iButtonsList');
+            list.innerHTML = message;
+        }
     }
     else{
         return alert("Missing chars");
@@ -133,11 +181,34 @@ function del(x){
     let index = x.parentNode.firstChild.firstChild.innerHTML;
     if(index > 0){
         if(confirm("Delete iButton?")){
-            socket.emit('delete', index);
+            index = parseInt(index)-1;
+            if(iButtonsList.length > 0){
+                if(iButtonsList.length > index){
+                    iButtonsList.splice(index, 1);
+                    iButtonsIndex = 1;
+                    message = '';
+                    for(iButton of iButtonsList){
+                        message += `<div class='iButtons'><span class='index'><span>${iButtonsIndex}</span>:</span><span>${iButton.toUpperCase()}</span><span class="delete" onclick='del(this)'>&#10006;</span></div>\n`;
+                        iButtonsIndex++;
+                    }
+                    let list = document.getElementById('iButtonsList');
+                    list.innerHTML = message;
+                }
+                else{
+                    alert('Unexpected error');
+                }
+            }
         }
     }
     else{
-        alert("Invalid index");
+        alert("Unexpected error");
     }
 }
 
+function duplicatedIButtonCheck(iButton){
+    for(index of iButtonsList){
+        if(index == iButton){
+            return true;
+        }
+    }
+}
