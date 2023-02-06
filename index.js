@@ -11,7 +11,7 @@ app.set('port', process.env.PORT || 3000)
 app.use(express.static(__dirname + '/views'));
 
 server.listen(app.get('port'), function(){
-    console.log(`Server listening on port ${app.get('port')}`);
+    console.log(`Server listening on port ${app.get('port')} http://www.localhost:3000/`);
 });
 
 //Serial COMM
@@ -27,7 +27,7 @@ SerialPort.list().then(function(ports){
     ports.forEach(function(port){
         if(port.manufacturer == 'wch.cn'){
             portList.push(port.path);
-            console.log("Port: ", port);
+            //console.log("Port: ", port);
         }
     });
 });
@@ -85,7 +85,7 @@ io.on('connect', socket => {
             ports.forEach(function(port){
                 if(port.manufacturer == 'wch.cn'){
                     portList.push(port.path);
-                    console.log("Port: ", port);
+                    //console.log("Port: ", port);
                 }
             });
         });

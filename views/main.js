@@ -151,26 +151,30 @@ function deleteInvalidChar(){
 }
 
 function add(){
-    let iButton = document.getElementById('iButton').value.toLowerCase();
-    if(iButton.length == 16){
-        for(char of iButton){
-            let code = char.charCodeAt(0);
-            if((code<48 || code>57) && (code<65 || code>70) && (code<97 || code>102)){
-                return alert("Invalid char");
+    let iButtons = document.getElementById('iButton').value.toLowerCase();
+    if(iButtons.length % 16 == 0){
+        for(let i=0; i<iButtons.length; i+=16){
+            //iButtons.push(iButtons.substring(i, i+16));
+            let iButton = iButtons.substring(i, i+16)
+            for(char of iButtons){
+                let code = char.charCodeAt(0);
+                if((code<48 || code>57) && (code<65 || code>70) && (code<97 || code>102)){
+                    return alert("Invalid char");
+                }
+            }
+            
+            if(duplicatedIButtonCheck(iButton) == true){
+                alert(`${iButton.toUpperCase()} is on list`);
+            }
+            else{
+                iButtonsList.push(iButton.toLowerCase());
+                message += `<div class='iButtons'><span class='index'><span>${iButtonsIndex}</span>:</span><span>${iButton.toUpperCase()}</span><span class="delete" onclick='del(this)'>&#10006;</span></div>\n`;
+                iButtonsIndex++;
+                let list = document.getElementById('iButtonsList');
+                list.innerHTML = message;
             }
         }
         document.getElementById('iButton').value = "";
-
-        if(duplicatedIButtonCheck(iButton) == true){
-            alert("iButton is on list");
-        }
-        else{
-            iButtonsList.push(iButton.toLowerCase());
-            message += `<div class='iButtons'><span class='index'><span>${iButtonsIndex}</span>:</span><span>${iButton.toUpperCase()}</span><span class="delete" onclick='del(this)'>&#10006;</span></div>\n`;
-            iButtonsIndex++;
-            let list = document.getElementById('iButtonsList');
-            list.innerHTML = message;
-        }
     }
     else{
         return alert("Missing chars");

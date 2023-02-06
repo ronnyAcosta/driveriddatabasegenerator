@@ -34,10 +34,10 @@
                 <span>File: </span>
                 <span><input type="file" id="textFile" onchange="openFile()"></span>
             </div>
-            <div>
+            <div class="add">
                 <div>
                     <h2>Add iButtons</h2>
-                    <span><input type="text" maxlength="16" id="iButton" oninput="deleteInvalidChar()"></span>
+                    <span><input type="text" id="iButton" oninput="deleteInvalidChar()"></span>
                     <span><button class="button" onclick="add()">Add</button></span>
                     <div class="add-ex">
                         <figure><img src="img/iButton.png" alt="iButton"></figure>
@@ -45,7 +45,7 @@
                     </div>
                     
                 </div>
-                <!--
+            <!--
                 <div>
                     <p>exxx</p>
                 </div>
@@ -56,7 +56,7 @@
         <section class="list">
             <h2>iButtons List:</h2>
             <div id="iButtonsList"></div>
-            <div><button id="download" onclick="download()"><img class="download-icon" src="img/file.png" alt="icon">Download Database</button></div>
+            <div><button id="download" onclick="download()"><img class="download-icon" src="img/file.png" alt="icon">Generate Database</button></div>
         </section>
     
 

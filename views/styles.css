@@ -32,11 +32,11 @@ main{
     justify-content: flex-start;
     align-items: flex-start;
 }
-/*
+
 .reader{
     display: none;
 }
-*/
+
 .input{
     width: 40%;
     
@@ -47,6 +47,10 @@ main{
 
 .list{
     margin-left: 10px;
+}
+.add{
+    display: flex;
+
 }
 .add-ex{
     width: 240px;
