@@ -29,7 +29,8 @@ socket.on('portStatus', (status)=>{
 socket.on('iButton', (data)=>{
     if(duplicatedIButtonCheck(data) == true){
         console.log("iButton is on list");
-        socket.emit('iButtonCheck', '01')
+        socket.emit('iButtonCheck', '01');
+        alert(`${data.toUpperCase()} is on list`);
     }
     else{
         iButtonsList.push(data.toLowerCase());
