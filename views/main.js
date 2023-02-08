@@ -126,7 +126,6 @@ function download(){
 }
 
 function openFile(){
-    //document.getElementById("textFile").value = "";
     let file = document.getElementById("textFile").files[0];
     
     if(file){
