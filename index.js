@@ -11,7 +11,7 @@ app.set('port', process.env.PORT || 3000)
 app.use(express.static(__dirname + '/views'));
 
 server.listen(app.get('port'), function(){
-    console.log(`Server listening on port ${app.get('port')} http://www.localhost:3000/`);
+    console.log(`Server listening on port ${app.get('port')}. Copy the link on browser:\n\nhttp://www.localhost:3000/`);
 });
 
 //Serial COMM

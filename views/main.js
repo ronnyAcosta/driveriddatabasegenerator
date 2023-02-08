@@ -126,6 +126,7 @@ function download(){
 }
 
 function openFile(){
+    //document.getElementById("textFile").value = "";
     let file = document.getElementById("textFile").files[0];
     
     if(file){
@@ -139,6 +140,7 @@ function openFile(){
         reader.readAsArrayBuffer(file);
     }
     console.log("Opening File");
+    document.getElementById("textFile").value = "";
 }
 
 function deleteInvalidChar(){
